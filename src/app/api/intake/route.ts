@@ -1,0 +1,3 @@
+import {db} from '@/lib/db';
+// Optional website appointment-request intake (spec §2): API-key protected, creates REQUEST only — never exposes clinical data.
+export async function POST(req:Request){ if(!process.env.WEBSITE_INTAKE_API_KEY||req.headers.get('x-api-key')!==process.env.WEBSITE_INTAKE_API_KEY) return Response.json({error:'Forbidden'},{status:403}); const b=await req.json(); const n=await db.notification.create({data:{channel:'IN_APP',recipient:'RECEPTION',template:'website_appointment_request',message:JSON.stringify({name:b.name,phone:b.phone,preferredDate:b.preferredDate,reason:b.reason})}}); return Response.json({received:true,id:n.id,note:'Queued for reception to verify and book in HMS'},{status:202}); }

@@ -1,0 +1,2 @@
+# Testing
+`npm test` (Vitest): BMI/warnings, allergy conflict, FEFO+expired blocking, billing totals, duplicate threshold, RBAC (incl. Super Admin cannot sign), sync signed-record conflict. Manual/E2E journey (CLINICAL_UAT.md): register→check-in→triage→consult→lab order/result/verify→prescribe→invoice→pay→dispense (FEFO)→sign→follow-up. Negative tests: wrong-role 403, duplicate patient 409, duplicate M-Pesa callback (receipt replay accepted once), expired-only stock shortfall 409, verified lab edit 409, signed encounter overwrite via sync 409. Use synthetic data only.

@@ -1,0 +1,1 @@
+import type {Config} from 'tailwindcss'; const c:Config={content:['./src/**/*.{ts,tsx}'],theme:{extend:{colors:{navy:{DEFAULT:'#0B2340',800:'#102F52',700:'#163A63'},teal2:'#0E9A8B',cream:'#F6F8FA'}}},plugins:[]}; export default c;

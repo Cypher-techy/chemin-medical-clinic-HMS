@@ -1,0 +1,2 @@
+import {db} from '@/lib/db'; import {requireUser,audit} from '@/lib/auth'; import {bmi,vitalWarnings} from '@/lib/clinical';
+export async function POST(req:Request){ const a=await requireUser(['vitals','triage']); if(a.error)return a.error; const b=await req.json(); const v=await db.vital.create({data:{...b,bmi:bmi(b.heightCm,b.weightKg),recordedById:a.user.sub}}); return Response.json({vital:v,warnings:vitalWarnings(v)},{status:201}); }

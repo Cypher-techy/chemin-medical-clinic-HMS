@@ -1,0 +1,2 @@
+# Backup & recovery
+Schedule encrypted backups of the Postgres DB (pg_dump + age/openssl) locally AND remotely; local server is never the only backup. Verify by periodic restore into a scratch DB (a backup without a tested restore is not evidence of recoverability). Suggested RPO 24h (15min with WAL archiving), RTO 4h — clinic to approve. Monitor via Admin settings + backup job logs; alert on failure. Restore drill: quarterly, documented with date/operator/result.

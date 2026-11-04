@@ -1,0 +1,2 @@
+export function duplicateScore(a:{firstName:string;surname:string;dob:Date|string;phone?:string|null},b:typeof a){ let s=0; if(a.phone&&b.phone&&a.phone.replace(/\D/g,'')===b.phone.replace(/\D/g,''))s+=50; if(new Date(a.dob).toDateString()===new Date(b.dob).toDateString())s+=30; if(a.surname.toLowerCase()===b.surname.toLowerCase())s+=10; if(a.firstName.toLowerCase()===b.firstName.toLowerCase())s+=10; return s; }
+export const DUPLICATE_THRESHOLD=60;

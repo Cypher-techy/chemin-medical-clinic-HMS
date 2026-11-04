@@ -1,0 +1,2 @@
+# Admin guide
+Admin page: create/suspend users & roles, track licences, configure beds ONLY after clinic verifies licensed capacity, enter facility legal/MOH/KEPH/SHA details and set verified=true only with documentary evidence, review audit log & break-glass justifications, monitor sync conflicts & notification queues. Change all seed passwords immediately; enable MFA for SUPER_ADMIN/CLINIC_ADMIN at the identity layer before production.

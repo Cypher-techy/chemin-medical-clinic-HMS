@@ -1,0 +1,4 @@
+# Deployment
+Envs: development / staging / production separated; secrets via platform secret manager, never committed. Production: switch Prisma provider to postgresql, set DATABASE_URL, run `prisma migrate deploy`, `npm run build`, serve behind TLS reverse proxy with rate limiting + security headers, enable daily encrypted backups + restore drills, health check = GET /login (200) + DB connectivity in monitoring. Local clinic node: same build with local DB + SYNC_MODE=LOCAL_NODE, documented install/backup on-site. Rollback: redeploy previous build artifact; DB migrations must be backward-compatible.
+## Outstanding (honest)
+Daraja/SMS/WhatsApp/SHA/FHIR credentials & approvals; facility verification (legal name, licence, KEPH, MOH code, beds, SHA status) — seed keeps verified=false; MFA enrolment UI; PDF/CSV report builder; BullMQ worker; Postgres migration history; clinical UAT sign-off before real patient data.
