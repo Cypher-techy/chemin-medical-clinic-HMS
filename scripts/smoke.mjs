@@ -22,4 +22,12 @@ const rx=(await call('GET','/api/pharmacy',null,'pharm')).d.prescriptions.find(x
 ({d}=await call('POST','/api/backup',null,'adm')); ok('backup created',!!d.sha256);
 ({d}=await call('POST','/api/sync',{entity:'Encounter',entityId:enc,operation:'UPDATE',payload:{status:'SIGNED'},clientEventId:'smk-'+stamp},'doc')); ok('sync signed conflict',d.event?.status==='CONFLICT');
 const forbidden=await call('POST','/api/encounters',{action:'sign',id:enc},'rec'); ok('receptionist cannot sign (403)',forbidden.r.status===403);
+({d}=await call('PUT','/api/notifications',null,'adm')); ok('reminder job runs',typeof d.created==='number');
+({d}=await call('POST','/api/billing',{action:'refund',invoiceId:inv,amount:100,reason:'Smoke-test authorised refund'},'acc')); ok('refund recorded (negative payment)',d.payment?.amount===-100);
+const noReason=await call('POST','/api/billing',{action:'refund',invoiceId:inv,amount:10},'acc'); ok('refund without reason blocked',noReason.r.status===400);
+({d}=await call('POST','/api/admin',{action:'patientAccount',patientId:pid,name:'Smoke Patient',email:'patient'+stamp+'@example.local',password:'Patient@2026'},'adm')); ok('patient portal account created',d.user?.role==='PATIENT');
+({d}=await call('POST','/api/auth/login',{email:'patient'+stamp+'@example.local',password:'Patient@2026'},'pat')); ok('patient login',!!d.user);
+const other=await call('GET','/api/patients/'+pid,null,'pat'); ok('patient can read own record',other.r.ok);
+const all=await call('GET','/api/patients',null,'pat'); ok('patient cannot list all patients (403)',all.r.status===403);
+const health=await fetch(B+'/api/health').then(r=>r.json()); ok('health endpoint',health.status==='ok');
 console.log('Smoke journey complete.');
