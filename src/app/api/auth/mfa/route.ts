@@ -1,0 +1,7 @@
+import {db} from '@/lib/db'; import {requireUser,audit} from '@/lib/auth'; import {generateSecret,verifyTotp,otpauthUrl} from '@/lib/totp';
+// MFA enrolment: setup returns the secret ONCE (store in authenticator app). Login enforces codes only after enable succeeds.
+export async function POST(req:Request){ const a=await requireUser(); if(a.error)return a.error; const b=await req.json(); const me=await db.user.findUnique({where:{id:a.user.sub}});
+ if(b.action==='setup'){ const secret=generateSecret(); await db.user.update({where:{id:me.id},data:{mfaSecret:secret,mfaEnabled:false}}); await audit(me.id,'MFA_SETUP_STARTED','User',me.id); return Response.json({secret,otpauthUrl:otpauthUrl(secret,me.email),note:'Shown once. Enter it in an authenticator app, then call action=enable with a code.'}); }
+ if(b.action==='enable'){ if(!me.mfaSecret||!verifyTotp(me.mfaSecret,b.code))return Response.json({error:'Invalid MFA code'},{status:400}); await db.user.update({where:{id:me.id},data:{mfaEnabled:true}}); await audit(me.id,'MFA_ENABLED','User',me.id); return Response.json({ok:true,mfaEnabled:true}); }
+ if(b.action==='disable'){ if(me.mfaEnabled&&!verifyTotp(me.mfaSecret,b.code))return Response.json({error:'Current MFA code required to disable'},{status:400}); await db.user.update({where:{id:me.id},data:{mfaEnabled:false,mfaSecret:null}}); await audit(me.id,'MFA_DISABLED','User',me.id); return Response.json({ok:true}); }
+ return Response.json({error:'Unknown action'},{status:400}); }
